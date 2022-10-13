@@ -22,18 +22,23 @@ class LinkedList:
     # TODO: ...
 
     def append(self, node):
-        pass
+        self[-1].next = node
+
+    def prepend(self, node):
+        node.next = self.head
+        self.head = node
+
 
     def copy(self):
         pass
 
-    def count(self):
+    def count(self, element):
         pass
 
     def clear(self):
         pass
 
-    def index(self):
+    def index(self, element):
         pass
 
     def sort(self):
@@ -49,7 +54,10 @@ class LinkedList:
         pass
 
     def __contains__(self, item):
-        pass
+        for i in self:
+            if i.data == item:
+                return True
+        return False
 
     def __iter__(self):
         self.__curr = self.head
@@ -94,20 +102,19 @@ class LinkedList:
     def __setitem__(self, key, value):
         length = len(self)
 
-        if key >= length:
+        if key > length:
             raise Exception(f'Out of bounds with LinkedList length {length}, key {key}')
 
         if key == 0:
-            value.next = self.head
-            self.head = value
+            self.prepend(value)
             return
 
-        if key == -1:
-            self[-1].next = value
+        if key == -1 or key == length:
+            self.append(value)
             return
 
-        value.next = self[-1]
-        self[key].next = value
+        value.next = self[key]
+        self[key-1].next = value
 
     def __add__(self, other):
         llist1 = new_deref(self)
@@ -133,6 +140,9 @@ llist.head = Node(1)
 llist.head.next = Node(2)
 llist.head.next.next = Node(3)
 llist.head.next.next.next = Node(4)
+
+llist[4] = Node(123)
+print(llist)
 
 llist2 = LinkedList()
 llist2.head = Node(11)
