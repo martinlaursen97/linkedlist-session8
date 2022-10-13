@@ -47,7 +47,7 @@ class LinkedList:
         return count
 
     def clear(self):
-        self.head = None
+        del self
 
     def index(self, element):
         for i, node in enumerate(self):
@@ -61,11 +61,31 @@ class LinkedList:
     def remove(self, element):
         pass
 
+    def insert(self, key, value):
+        if self.middle_indexes(key, value):
+            value.next = self[key]
+            self[key - 1].next = value
+
+    def middle_indexes(self, key, value):
+        length = len(self)
+
+        if key > length:
+            raise Exception(f'Out of bounds with LinkedList length {length}, key {key}')
+
+        if key == 0:
+            self.prepend(value)
+            return False
+
+        if key == -1 or key == length:
+            self.append(value)
+            return False
+        return True
+
     def __reversed__(self):
         pass
 
     def __delitem__(self, key):
-        pass
+        self.head = None
 
     def __contains__(self, item):
         for i in self:
@@ -114,21 +134,9 @@ class LinkedList:
             return node
 
     def __setitem__(self, key, value):
-        length = len(self)
-
-        if key > length:
-            raise Exception(f'Out of bounds with LinkedList length {length}, key {key}')
-
-        if key == 0:
-            self.prepend(value)
-            return
-
-        if key == -1 or key == length:
-            self.append(value)
-            return
-
-        value.next = self[key]
-        self[key - 1].next = value
+        if self.middle_indexes(key, value):
+            value.next = self[key + 1]
+            self[key - 1].next = value
 
     def __add__(self, other):
         llist1 = new_deref(self)
@@ -155,9 +163,7 @@ llist.append(Node(1))
 llist.append(Node(2))
 llist.append(Node(3))
 llist.prepend(Node(21))
-print(llist.index(3))
-print(llist)
-llist.clear()
-print(llist)
-llist.append(Node(1))
+
+llist[0] = Node(233)
+llist.insert(0, Node(332))
 print(llist)
