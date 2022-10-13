@@ -58,15 +58,15 @@ class LinkedList:
     def sort(self):
         pass
 
-    def remove(self, element):
+    def remove(self, key):
         pass
 
     def insert(self, key, value):
-        if self.middle_indexes(key, value):
+        if self.__middle_indexes(key, value):
             value.next = self[key]
             self[key - 1].next = value
 
-    def middle_indexes(self, key, value):
+    def __middle_indexes(self, key, value):
         length = len(self)
 
         if key > length:
@@ -81,8 +81,15 @@ class LinkedList:
             return False
         return True
 
-    def __reversed__(self):
-        pass
+    def reverse(self):
+        prev = None
+        current = self.head
+        while current is not None:
+            next = current.next
+            current.next = prev
+            prev = current
+            current = next
+        self.head = prev
 
     def __delitem__(self, key):
         self.head = None
@@ -134,7 +141,7 @@ class LinkedList:
             return node
 
     def __setitem__(self, key, value):
-        if self.middle_indexes(key, value):
+        if self.__middle_indexes(key, value):
             value.next = self[key + 1]
             self[key - 1].next = value
 
@@ -165,5 +172,10 @@ llist.append(Node(3))
 llist.prepend(Node(21))
 
 llist[0] = Node(233)
-llist.insert(0, Node(332))
+llist.insert(1, Node(332))
 print(llist)
+llist.reverse()
+print(llist)
+
+del llist
+
