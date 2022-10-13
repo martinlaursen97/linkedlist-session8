@@ -34,18 +34,26 @@ class LinkedList:
         node.next = self.head
         self.head = node
 
-
-    def copy(self):
-        pass
+    def copy(self, deref=True):
+        if deref:
+            return new_deref(self)
+        return self
 
     def count(self, element):
-        pass
+        count = 0
+        for i in self:
+            if i.data == element:
+                count += 1
+        return count
 
     def clear(self):
-        pass
+        self.head = None
 
     def index(self, element):
-        pass
+        for i, node in enumerate(self):
+            if node.data == element:
+                return i
+        return -1
 
     def sort(self):
         pass
@@ -120,7 +128,7 @@ class LinkedList:
             return
 
         value.next = self[key]
-        self[key-1].next = value
+        self[key - 1].next = value
 
     def __add__(self, other):
         llist1 = new_deref(self)
@@ -143,7 +151,13 @@ class LinkedList:
 
 llist = LinkedList()
 llist.append(Node(1))
+llist.append(Node(1))
 llist.append(Node(2))
 llist.append(Node(3))
 llist.prepend(Node(21))
+print(llist.index(3))
+print(llist)
+llist.clear()
+print(llist)
+llist.append(Node(1))
 print(llist)
