@@ -19,6 +19,38 @@ class LinkedList:
     def __init__(self):
         self.head = None
 
+    # TODO: ...
+
+    def append(self, node):
+        pass
+
+    def copy(self):
+        pass
+
+    def count(self):
+        pass
+
+    def clear(self):
+        pass
+
+    def index(self):
+        pass
+
+    def sort(self):
+        pass
+
+    def remove(self, element):
+        pass
+
+    def __reversed__(self):
+        pass
+
+    def __delitem__(self, key):
+        pass
+
+    def __contains__(self, item):
+        pass
+
     def __iter__(self):
         self.__curr = self.head
         return self
@@ -94,9 +126,6 @@ class LinkedList:
 
     def __len__(self):
         return len([i for i in self])
-
-    def __del__(self):
-        self.head = None
 
 
 llist = LinkedList()
