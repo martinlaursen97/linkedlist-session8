@@ -1,6 +1,3 @@
-from itertools import count
-
-
 class Node:
     def __init__(self, data):
         self.data = data
@@ -86,8 +83,14 @@ class LinkedList:
         llist1[-1].next = llist2.head
         return llist1
 
+    def __mul__(self, val):
+        llist = new_deref(self)
+        for i in range(val):
+            llist += llist
+        return llist
+
     def __repr__(self):
-        return str([self[i].data for i in range(len(self))])
+        return f'LinkedList({str([self[i].data for i in range(len(self))])})'
 
     def __len__(self):
         return len([i for i in self])
@@ -109,4 +112,3 @@ llist2.head.next.next = Node(33)
 llist2.head.next.next.next = Node(44)
 
 llist3 = llist + llist2
-print(llist3, llist)
