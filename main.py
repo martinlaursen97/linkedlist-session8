@@ -1,3 +1,6 @@
+from itertools import count
+
+
 class Node:
     def __init__(self, data):
         self.data = data
@@ -8,48 +11,58 @@ class LinkedList:
     def __init__(self):
         self.head = None
 
-    def __getitem__(self, position):
+    def __iter__(self):
+        self.curr = self.head
+        return self
+
+    def __next__(self):
+        curr = self.curr
+        if curr is None:
+            raise StopIteration
+        self.curr = curr.next
+        return curr
+
+    def __getitem__(self, key):
         length = len(self)
 
-        if isinstance(position, slice):
-            start = position.start if position.start >= 0 else position.start + length
-            stop = position.stop if position.step >= 0 else position.stop + length
-            step = position.step if position.step is not None else 1
+        if isinstance(key, slice):
+            print(True)
+            start = key.start
+            stop = key.stop
+            step = key.step if key.step is not None else 1
 
-            print(start, stop, step)
+            new_llist = LinkedList()
+            new_llist.head = Node(self[start].data)
 
-            return [self[i] for i in range(start, stop, step)]
-
-        if position < length:
-            if position < 0:
-                position += length
-
-            curr = self.head
-
-            for i in range(position):
+            curr = new_llist.head
+            for i in range(start + step, stop, step):
+                curr.next = Node(self[i].data)
                 curr = curr.next
 
-            return curr.data
-        raise Exception(f'Out of bounds with LinkedList length: {length}, position: {position}')
+            return new_llist
+        else:
+            _key = key if key >= 0 else key + length
+
+            if key >= length or _key < 0:
+                raise Exception(f'Out of bounds with LinkedList length {length}, key {key}')
+
+            it = iter(self)
+            node = next(it)
+            for i in range(_key):
+                node = next(it)
+            return node
+
+    def __setitem__(self, key, value):
+        length = len(self)
+
+    def __add__(self, other):
+        self[-1].next = other.head
 
     def __repr__(self):
-        curr = self.head
-        rep = [str(curr.data)]
-        while curr.next is not None:
-            curr = curr.next
-            rep.append(str(curr.data))
-
-        return f"[{', '.join(rep)}]"
+        return str([self[i].data for i in range(len(self))])
 
     def __len__(self):
-        length = 1
-
-        curr = self.head
-        while curr.next is not None:
-            curr = curr.next
-            length += 1
-
-        return length
+        return len([i for i in self])
 
 
 llist = LinkedList()
@@ -57,14 +70,5 @@ llist.head = Node(1)
 llist.head.next = Node(2)
 llist.head.next.next = Node(3)
 llist.head.next.next.next = Node(4)
-llist.head.next.next.next.next = Node(5)
-llist.head.next.next.next.next.next = Node(6)
-llist.head.next.next.next.next.next.next = Node(7)
-llist.head.next.next.next.next.next.next.next = Node(8)
-
-print(llist[-1:-7:-1])
-
-lst = [1, 2, 3, 4, 5, 6, 7, 8]
-
-print(lst[-1:-7:-1])
-# print(len(llist))
+myiter = iter(llist)
+print(llist[3:0])
