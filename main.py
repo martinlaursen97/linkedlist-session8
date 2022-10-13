@@ -54,6 +54,21 @@ class LinkedList:
     def __setitem__(self, key, value):
         length = len(self)
 
+        if key >= length:
+            raise Exception(f'Out of bounds with LinkedList length {length}, key {key}')
+
+        if key == 0:
+            value.next = self.head
+            self.head = value
+            return
+
+        if key == -1:
+            self[-1].next = value
+            return
+
+        value.next = self[-1]
+        self[key].next = value
+
     def __add__(self, other):
         self[-1].next = other.head
 
@@ -63,6 +78,9 @@ class LinkedList:
     def __len__(self):
         return len([i for i in self])
 
+    def __del__(self):
+        self.head = None
+
 
 llist = LinkedList()
 llist.head = Node(1)
@@ -70,6 +88,8 @@ llist.head.next = Node(2)
 llist.head.next.next = Node(3)
 llist.head.next.next.next = Node(4)
 
-lst = [1, 2, 3, 4]
-print(lst[-4:-1:1])
-print(llist[-4:-1:1])
+llist[0] = Node(10)
+print(llist)
+llist[-1] = Node(12)
+
+print(llist)
