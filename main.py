@@ -16,15 +16,21 @@ def new_deref(llist):
 
 
 class LinkedList:
-    def __init__(self):
-        self.head = None
+    def __init__(self, head=None):
+        self.head = head
 
     # TODO: ...
 
     def append(self, node):
+        if self.head is None:
+            self.head = node
+            return
         self[-1].next = node
 
     def prepend(self, node):
+        if self.head is None:
+            self.head = node
+            return
         node.next = self.head
         self.head = node
 
@@ -136,18 +142,8 @@ class LinkedList:
 
 
 llist = LinkedList()
-llist.head = Node(1)
-llist.head.next = Node(2)
-llist.head.next.next = Node(3)
-llist.head.next.next.next = Node(4)
-
-llist[4] = Node(123)
+llist.append(Node(1))
+llist.append(Node(2))
+llist.append(Node(3))
+llist.prepend(Node(21))
 print(llist)
-
-llist2 = LinkedList()
-llist2.head = Node(11)
-llist2.head.next = Node(22)
-llist2.head.next.next = Node(33)
-llist2.head.next.next.next = Node(44)
-
-llist3 = llist + llist2
