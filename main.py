@@ -7,6 +7,17 @@ class Node:
         self.next = None
 
 
+def new_deref(llist):
+    new_llist = LinkedList()
+
+    new_llist.head = Node(llist[0].data)
+    curr = new_llist.head
+    for i in range(1, len(llist)):
+        curr.next = Node(llist[i].data)
+        curr = curr.next
+    return new_llist
+
+
 class LinkedList:
     def __init__(self):
         self.head = None
@@ -70,7 +81,10 @@ class LinkedList:
         self[key].next = value
 
     def __add__(self, other):
-        self[-1].next = other.head
+        llist1 = new_deref(self)
+        llist2 = new_deref(other)
+        llist1[-1].next = llist2.head
+        return llist1
 
     def __repr__(self):
         return str([self[i].data for i in range(len(self))])
@@ -88,8 +102,11 @@ llist.head.next = Node(2)
 llist.head.next.next = Node(3)
 llist.head.next.next.next = Node(4)
 
-llist[0] = Node(10)
-print(llist)
-llist[-1] = Node(12)
+llist2 = LinkedList()
+llist2.head = Node(11)
+llist2.head.next = Node(22)
+llist2.head.next.next = Node(33)
+llist2.head.next.next.next = Node(44)
 
-print(llist)
+llist3 = llist + llist2
+print(llist3, llist)
