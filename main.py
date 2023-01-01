@@ -1,181 +1,87 @@
 class Node:
-    def __init__(self, data):
-        self.data = data
+    def __init__(self, value=None):
+        self.value = value
         self.next = None
 
 
-def new_deref(llist):
-    new_llist = LinkedList()
-
-    new_llist.head = Node(llist[0].data)
-    curr = new_llist.head
-    for i in range(1, len(llist)):
-        curr.next = Node(llist[i].data)
-        curr = curr.next
-    return new_llist
-
-
 class LinkedList:
-    def __init__(self, head=None):
-        self.head = head
-
-    # TODO: ...
-
-    def append(self, node):
-        if self.head is None:
-            self.head = node
-            return
-        self[-1].next = node
-
-    def prepend(self, node):
-        if self.head is None:
-            self.head = node
-            return
-        node.next = self.head
-        self.head = node
-
-    def copy(self, deref=True):
-        if deref:
-            return new_deref(self)
-        return self
-
-    def count(self, element):
-        count = 0
-        for i in self:
-            if i.data == element:
-                count += 1
-        return count
-
-    def clear(self):
-        del self
-
-    def index(self, element):
-        for i, node in enumerate(self):
-            if node.data == element:
-                return i
-        return -1
-
-    def sort(self):
-        pass
-
-    def remove(self, key):
-        pass
-
-    def insert(self, key, value):
-        if self.__middle_indexes(key, value):
-            value.next = self[key]
-            self[key - 1].next = value
-
-    def __middle_indexes(self, key, value):
-        length = len(self)
-
-        if key > length:
-            raise Exception(f'Out of bounds with LinkedList length {length}, key {key}')
-
-        if key == 0:
-            self.prepend(value)
-            return False
-
-        if key == -1 or key == length:
-            self.append(value)
-            return False
-        return True
-
-    def reverse(self):
-        prev = None
-        current = self.head
-        while current is not None:
-            next = current.next
-            current.next = prev
-            prev = current
-            current = next
-        self.head = prev
-
-    def __delitem__(self, key):
+    def __init__(self, *values):
         self.head = None
+        self.tail = None
+        self.size = 0
 
-    def __contains__(self, item):
-        for i in self:
-            if i.data == item:
-                return True
-        return False
+        [self.append(value) for value in values if values]
+
+    def append(self, value):
+        node = Node(value)
+        if self.tail:
+            self.tail.next = node
+        self.tail = node
+        if not self.head:
+            self.head = self.tail
+        self.size += 1
+
+    def extend(self, other):
+        self.tail.next = other
+        self.size += len(other)
+
+    def __get_nodes_sliced(self, slice):
+        start = slice.start if slice.start >= 0 else slice.start + len(self)
+        stop = slice.stop
+        step = slice.step or 1
+
+        return LinkedList(*[self[index].value for index in range(start, stop, step)])
+
+    def __get_node_indexed(self, index):
+        if index >= len(self) or index < -len(self):
+            raise IndexError('LinkedList index out of range')
+
+        index += len(self) if index < 0 else 0
+
+        current = self.head
+        for _ in range(index):
+            current = current.next
+        return current
 
     def __iter__(self):
-        self.__curr = self.head
+        self.current = self.head
         return self
 
     def __next__(self):
-        curr = self.__curr
-        if curr is None:
+        if not self.current:
             raise StopIteration
-        self.__curr = curr.next
-        return curr
+
+        node = self.current
+        self.current = self.current.next
+        return node
 
     def __getitem__(self, key):
-        length = len(self)
+        if not self.head:
+            raise IndexError('LinkedList index out of range')
 
         if isinstance(key, slice):
-            start = key.start if key.start > 0 else key.start + length
-            stop = key.stop if key.stop > 0 else key.stop + length
-            step = key.step if key.step is not None else 1
-
-            new_llist = LinkedList()
-            new_llist.head = Node(self[start].data)
-
-            curr = new_llist.head
-            for i in range(start + step, stop, step):
-                curr.next = Node(self[i].data)
-                curr = curr.next
-
-            return new_llist
-        else:
-            _key = key if key >= 0 else key + length
-
-            if _key >= length or _key < 0:
-                raise Exception(f'Out of bounds with LinkedList length {length}, key {key}')
-
-            it = iter(self)
-            node = next(it)
-            for i in range(_key):
-                node = next(it)
-            return node
+            return self.__get_nodes_sliced(key)
+        return self.__get_node_indexed(key)
 
     def __setitem__(self, key, value):
-        if self.__middle_indexes(key, value):
-            value.next = self[key + 1]
-            self[key - 1].next = value
-
-    def __add__(self, other):
-        llist1 = new_deref(self)
-        llist2 = new_deref(other)
-        llist1[-1].next = llist2.head
-        return llist1
-
-    def __mul__(self, val):
-        llist = new_deref(self)
-        for i in range(val):
-            llist += llist
-        return llist
-
-    def __repr__(self):
-        return f'LinkedList({str([self[i].data for i in range(len(self))])})'
+        self[key].value = value
 
     def __len__(self):
-        return len([i for i in self])
+        return self.size
+
+    def __eq__(self, other):
+        return all(i.value == j.value for i, j in zip(self, other))
+
+    def __str__(self):
+        return f'LinkedList{tuple(node.value for node in self)}'
+
+    def __add__(self, other):
+        return LinkedList(*[node.value for ll in [self, other] for node in ll])
 
 
-llist = LinkedList()
-llist.append(Node(1))
-llist.append(Node(1))
-llist.append(Node(2))
-llist.append(Node(3))
-llist.prepend(Node(21))
+if __name__ == '__main__':
+    list1 = LinkedList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+    list2 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-llist[0] = Node(233)
-llist.insert(1, Node(332))
-print(llist)
-llist.reverse()
-print(llist)
-
-del llist
-
+    print(list1[-1:1:-2])
+    print(list2[-1:1:-2])
