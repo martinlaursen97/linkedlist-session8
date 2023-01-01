@@ -23,6 +23,7 @@ class LinkedList:
 
     def extend(self, other):
         self.tail.next = other
+        self.tail = other.tail
         self.size += len(other)
 
     def __get_nodes_sliced(self, slice):
