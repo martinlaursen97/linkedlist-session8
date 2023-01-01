@@ -3,6 +3,9 @@ class Node:
         self.value = value
         self.next = None
 
+    def __str__(self):
+        return str(self.value)
+
 
 class LinkedList:
     def __init__(self, *values):
@@ -65,6 +68,11 @@ class LinkedList:
         return self.__get_node_indexed(key)
 
     def __setitem__(self, key, value):
+        if key < -len(self) or key >= len(self):
+            raise IndexError('LinkedList index out of range')
+
+        key += len(self) if key < 0 else 0
+
         self[key].value = value
 
     def __len__(self):
@@ -79,10 +87,33 @@ class LinkedList:
     def __add__(self, other):
         return LinkedList(*[node.value for ll in [self, other] for node in ll])
 
+    def __mul__(self, other):
+        return LinkedList(*[node.value for node in self] * other)
+
+    def __abs__(self):
+        return LinkedList(*[abs(node.value) for node in self])
+
 
 if __name__ == '__main__':
-    list1 = LinkedList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-    list2 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    list1 = LinkedList(-1, 2, -3, 4, -5)
+    list2 = LinkedList(6, -7, 8, -9, 10)
+    list3 = list1 + list2
+    list4 = [i.value for i in list3]
 
-    print(list1[-1:1:-2])
-    print(list2[-1:1:-2])
+    print(list3)
+    print(list3[0])
+    list3[-1] = -1000
+    print(list3[-4:0:-1])
+    print(list4[-4:0:-1])
+
+    print()
+
+    print(len(list3))
+    print(LinkedList(1, 2, 3) == LinkedList(1, 2, 3))
+
+    print()
+
+    print(list3)
+    print(list3 * 3)
+    print(abs(list3))
+
